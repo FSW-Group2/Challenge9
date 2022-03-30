@@ -1,11 +1,28 @@
 import React, { useState } from "react";
 import background from "./../images/sg.jpg";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Box } from "@mui/system";
-import { AccountCircle, SendRounded } from "@mui/icons-material";
-import { Button, TextField } from "@mui/material";
+import {
+  Lock,
+  PermIdentity,
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
+import {
+  Alert,
+  Button,
+  Divider,
+  FormControl,
+  IconButton,
+  Input,
+  InputAdornment,
+  InputLabel,
+} from "@mui/material";
+import GoogleIcon from "@mui/icons-material/Google";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import TwitterIcon from "@mui/icons-material/Twitter";
 
 function Login() {
   const [login, setLogin] = useState({
@@ -13,27 +30,34 @@ function Login() {
     password: "",
   });
 
+  const [values, setValues] = useState({
+    showPassword: false,
+  });
+
+  const [isToggle, setisToggle] = useState(false);
+
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    axios
+    await axios
       .post("http://localhost:7001/api/v1/auth/login", {
         username: login.username,
         password: login.password,
       })
       .then(function (response) {
-        if (!response.data) {
-          alert("data tidak tersedia");
-        } else {
+        try {
           console.log("ini response", response);
           navigate("/");
           localStorage.setItem("token", response.data.accessToken);
+        } catch (error) {
+          console.log("ini error", error);
         }
       })
-      .catch(function (error) {
-        console.log("ini error", error);
+      .catch((error) => {
+        if (error.response) {
+          setisToggle(true);
+        }
       });
 
     setLogin({
@@ -42,66 +66,158 @@ function Login() {
     });
   };
 
+  const handleClickShowPassword = () => {
+    setValues({
+      ...values,
+      showPassword: !values.showPassword,
+    });
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   return (
     <Wrapper>
-      <Card>
-        <h1>Login</h1>
-        <form onSubmit={(e) => handleSubmit(e)}>
-          <Box sx={{ display: "flex", alignItems: "flex-end" }}>
-            <AccountCircle sx={{ color: "action.active", mr: 1, my: 0.5 }} />
-            <TextField
-              id="input-with-sx"
-              label="username"
-              name="username"
-              value={login.username}
-              variant="standard"
-              onChange={(e) => setLogin({ ...login, username: e.target.value })}
-            />
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "flex-end" }}>
-            <AccountCircle sx={{ color: "action.active", mr: 1, my: 0.5 }} />
-            <TextField
-              id="input-with-sx"
-              label="password"
-              name="password"
-              value={login.password}
-              variant="standard"
-              onChange={(e) => setLogin({ ...login, password: e.target.value })}
-            />
-          </Box>
-          <Button
-            variant="contained"
-            endIcon={<SendRounded />}
-            color="success"
-            type="submit"
-          >
-            Send
-          </Button>
-        </form>
-      </Card>
+      <ImageLeft></ImageLeft>
+      <ImageRigth>
+        <h1>Sign In</h1>
+        <Logo>
+          <GoogleIcon />
+          <GitHubIcon />
+          <FacebookIcon />
+          <TwitterIcon />
+        </Logo>
+        <Card>
+          {isToggle && (
+            <Alert severity="error">Username or password is not correct.</Alert>
+          )}
+          <form onSubmit={(e) => handleSubmit(e)}>
+            <FormControl sx={{ m: 1, width: "25ch" }} variant="standard">
+              <InputLabel>Username</InputLabel>
+              <Input
+                value={login.username}
+                onChange={(e) =>
+                  setLogin({ ...login, username: e.target.value })
+                }
+                startAdornment={
+                  <InputAdornment position="start">
+                    <IconButton>
+                      <PermIdentity />
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
+            <FormControl sx={{ m: 1, width: "25ch" }} variant="standard">
+              <InputLabel htmlFor="standard-adornment-password">
+                Password
+              </InputLabel>
+              <Input
+                id="standard-adornment-password"
+                type={values.showPassword ? "text" : "password"}
+                value={login.password}
+                onChange={(e) =>
+                  setLogin({ ...login, password: e.target.value })
+                }
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                startAdornment={
+                  <InputAdornment position="start">
+                    <IconButton>
+                      <Lock />
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
+
+            <h5>forgot password?</h5>
+            <Button
+              variant="outlined"
+              type="submit"
+              sx={{ my: 2 }}
+              style={{
+                border: "0.1rem solid #000000",
+                color: "#000000",
+                width: "80%",
+              }}
+            >
+              Sign In
+            </Button>
+            <Divider style={{ background: "#000000" }} />
+            <h6>
+              Don't have an account?{" "}
+              <Link to={"/register"}>
+                <span>Sign Up</span>
+              </Link>
+            </h6>
+          </form>
+        </Card>
+      </ImageRigth>
     </Wrapper>
   );
 }
 
 const Wrapper = styled.div`
+  height: 100vh;
+  width: 100%;
+  display: flex;
+`;
+
+const ImageLeft = styled.div`
   background: linear-gradient(
       0deg,
       rgba(8, 9, 10, 1) 0%,
       rgba(255, 255, 255, 0) 100%
     ),
     url(${background}) no-repeat center center / cover;
-  height: 100vh;
-  width: 100%;
+  width: 50%;
+  height: 100%;
 `;
 
 const Card = styled.div`
-  width: 20rem;
-  height: 30rem;
-  background: linear-gradient(35deg, rgb(177, 130, 48), rgb(249, 174, 62));
-  position: absolute;
-  bottom: 20vh;
-  right: 50vh;
   border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  h5 {
+    color: #000000;
+    font-weight: 600;
+    text-align: end;
+  }
+  width: 20rem;
+  h6 {
+    font-weight: 300;
+    span {
+      font-weight: 600;
+    }
+  }
+`;
+
+const ImageRigth = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 100%;
+`;
+
+const Logo = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  margin: 2rem 0rem;
 `;
 
 export default Login;

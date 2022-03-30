@@ -4,22 +4,28 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Avatar, Divider, ListItemIcon } from "@mui/material";
+import { Logout } from "@mui/icons-material";
+import male from "../images/male.png";
 
 export default function MenuAppBar() {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [isData, setisData] = useState([]);
   const navigate = useNavigate();
 
   const handleLogOut = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
+
+  const open = Boolean(anchorEl);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -29,25 +35,36 @@ export default function MenuAppBar() {
     setAnchorEl(null);
   };
 
-  const [isLogin, setIsLogin] = useState(false);
-
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      setIsLogin(true);
-    } else {
-      setIsLogin(false);
-    }
+    const token = localStorage.getItem("token");
+    const getData = async () => {
+      const { data } = await axios.get(
+        "http://localhost:7001/api/v1/auth/whoami",
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const fetchdata = data;
+      setisData(fetchdata);
+    };
+    getData();
   }, []);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
         position="fixed"
-        style={{ backgroundColor: "#000000", opacity: 0.5 }}
+        style={{
+          backgroundColor: "transparent",
+          boxShadow: "none",
+        }}
+        sx={{ borderBottom: 1, borderColor: "white" }}
       >
         <Toolbar>
           <Typography variant="h8" component="div" sx={{ mr: 10 }}>
-            <div>Squid Game</div>
+            <h5>Squid Game</h5>
           </Typography>
           <Typography
             variant="h8"
@@ -60,44 +77,75 @@ export default function MenuAppBar() {
             }}
           >
             <LinkNavbar to={"/"}>
-              <div>Home</div>
+              <h5>Games</h5>
             </LinkNavbar>
-            <div>Games</div>
-            <div>Topskor</div>
+            <LinkNavbar to={"/"}>
+              <h5>Leaderboard</h5>
+            </LinkNavbar>
             <LinkNavbar to={"/listplayer"}>
-              <div>List Player</div>
+              <h5>List Player</h5>
             </LinkNavbar>
           </Typography>
 
-          {isLogin ? (
+          {isData ? (
             <div>
               <IconButton
-                size="large"
+                size="small"
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 onClick={handleMenu}
                 color="inherit"
               >
-                <AccountCircle />
+                <h5>{isData.username}</h5>
+                <Avatar alt="male" src={male} />
               </IconButton>
               <Menu
-                id="menu-appbar"
                 anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorEl)}
+                id="account-menu"
+                open={open}
                 onClose={handleClose}
+                onClick={handleClose}
+                PaperProps={{
+                  elevation: 0,
+                  sx: {
+                    overflow: "visible",
+                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                    mt: 1.5,
+                    "& .MuiAvatar-root": {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1,
+                    },
+                    "&:before": {
+                      content: '""',
+                      display: "block",
+                      position: "absolute",
+                      top: 0,
+                      right: 14,
+                      width: 10,
+                      height: 10,
+                      bgcolor: "background.paper",
+                      transform: "translateY(-50%) rotate(45deg)",
+                      zIndex: 0,
+                    },
+                  },
+                }}
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
-                <MenuItem>Profile</MenuItem>
-                <MenuItem onClick={handleLogOut}>Logout</MenuItem>
+                <MenuItem>
+                  <Avatar alt="male" src={male} /> Profile
+                </MenuItem>
+                <Divider />
+
+                <MenuItem onClick={handleLogOut}>
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                  Logout
+                </MenuItem>
               </Menu>
             </div>
           ) : (
@@ -107,10 +155,10 @@ export default function MenuAppBar() {
               sx={{ display: "flex", gap: 2, cursor: "pointer" }}
             >
               <LinkNavbar to={"/login"}>
-                <div>Login</div>
+                <h5>Login</h5>
               </LinkNavbar>
               <LinkNavbar to={"/register"}>
-                <div>Register</div>
+                <h5>Register</h5>
               </LinkNavbar>
             </Typography>
           )}
@@ -123,4 +171,7 @@ export default function MenuAppBar() {
 const LinkNavbar = styled(Link)`
   color: white;
   text-decoration: none;
+  h5 {
+    font-weight: 300;
+  }
 `;
