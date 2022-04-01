@@ -18,6 +18,7 @@ import male from "../images/male.png";
 export default function MenuAppBar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isData, setisData] = useState([]);
+
   const navigate = useNavigate();
 
   const handleLogOut = () => {
@@ -47,6 +48,7 @@ export default function MenuAppBar() {
         }
       );
       const fetchdata = data;
+
       setisData(fetchdata);
     };
     getData();

@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ListPlayer from "./pages/ListPlayer";
 
+
 function App() {
   return (
     <div className="App">
