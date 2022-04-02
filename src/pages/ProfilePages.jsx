@@ -1,13 +1,13 @@
 import * as React from "react";
 import ProfileDetail from "../components/ProfileDetail";
 import ProfileForm from "../components/ProfileForm";
-import MenuAppBar from "../components/Navbar";
+// import MenuAppBar from "../components/Navbar";
 import styled from "styled-components";
 
 export default function BasicGrid() {
   return (
     <Container>
-      <MenuAppBar />
+      {/* <MenuAppBar /> */}
       <Card>
         <ProfileDetail />
         <ProfileForm />

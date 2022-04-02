@@ -1,10 +1,12 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import { Container } from '@mui/material';
 
 
 export default function HelperTextAligned() {
   return (
+    <Container>
     <Box
       sx={{
         display: 'flex',
@@ -29,5 +31,6 @@ export default function HelperTextAligned() {
       />
       
     </Box>
+    </Container>
   );
 }
