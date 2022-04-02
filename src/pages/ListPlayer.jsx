@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import background from "./../images/requirements.png";
+import { getDocs, collection } from "firebase/firestore";
+import { db } from "../config/firebase";
 
 function ListPlayer() {
   const [players, setPlayers] = useState([{}]);
-
-  const getDataPlayer = async () => {
-    // const { data } = await axios.get("http://localhost:4000/user_game");
-    // const fetchdata = data;
-    // setPlayers(fetchdata);
-  };
+  const userCollectionRef = collection(db, "users");
   useEffect(() => {
-    // getDataPlayer();
+    const getDataPlayer = async () => {
+      const data = await getDocs(userCollectionRef);
+      setPlayers(data.docs.map((doc) => ({ ...doc.data() })));
+    };
+    getDataPlayer();
   }, []);
   return (
     <Wrapper>
