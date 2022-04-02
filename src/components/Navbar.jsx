@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Avatar, Divider, ListItemIcon } from "@mui/material";
@@ -16,11 +16,23 @@ import { Logout } from "@mui/icons-material";
 import male from "../images/male.png";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
+import AuthContext from "../context/AuthContext";
+import { doc, getDoc } from "firebase/firestore";
+
+// const docRef = doc(db, "users");
+// const docSnap = await getDoc(docRef);
+
+// if (docSnap.exists()) {
+//   console.log("Document data:", docSnap.data());
+// } else {
+//   // doc.data() will be undefined in this case
+//   console.log("No such document!");
+// }
 
 export default function MenuAppBar() {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [isData, setisData] = useState([]);
   const navigate = useNavigate();
+  const isAuthenticated = useContext(AuthContext);
 
   const handleLogOut = () => {
     signOut(auth)
@@ -42,23 +54,6 @@ export default function MenuAppBar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const getData = async () => {
-      const { data } = await axios.get(
-        "http://localhost:7001/api/v1/auth/whoami",
-        {
-          headers: {
-            Authorization: `${token}`,
-          },
-        }
-      );
-      const fetchdata = data;
-      setisData(fetchdata);
-    };
-    getData();
-  }, []);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -97,7 +92,7 @@ export default function MenuAppBar() {
             </LinkNavbar>
           </Typography>
 
-          {isData ? (
+          {isAuthenticated ? (
             <div>
               <IconButton
                 size="small"
@@ -107,7 +102,7 @@ export default function MenuAppBar() {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <h5>{isData.username}</h5>
+                {/* <h5>{isData.username}</h5> */}
                 <Avatar alt="male" src={male} />
               </IconButton>
               <Menu

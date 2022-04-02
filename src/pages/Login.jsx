@@ -35,7 +35,7 @@ function Login() {
     showPassword: false,
   });
 
-  const [isToggle, setisToggle] = useState(false);
+  const [isToggle, setisToggle] = useState("");
 
   const navigate = useNavigate();
 
@@ -47,8 +47,10 @@ function Login() {
         navigate("/");
       })
       .catch((error) => {
-        if (error.response) {
-          setisToggle(true);
+        if (error) {
+          const errorCode = error.code.split("auth/")[1];
+          const errorMessage = error.message;
+          setisToggle(errorCode);
         }
       });
 
@@ -81,9 +83,7 @@ function Login() {
           <TwitterIcon />
         </Logo>
         <Card>
-          {isToggle && (
-            <Alert severity="error">Username or password is not correct.</Alert>
-          )}
+          {isToggle && <Alert severity="error">{isToggle}</Alert>}
           <form onSubmit={(e) => handleSubmit(e)}>
             <FormControl sx={{ m: 1, width: "25ch" }} variant="standard">
               <InputLabel>Email</InputLabel>
