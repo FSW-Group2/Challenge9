@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import background from "./../images/sg.jpg";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import {
   Lock,
   PermIdentity,
@@ -23,6 +22,8 @@ import GoogleIcon from "@mui/icons-material/Google";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../config/firebase";
 
 function Login() {
   const [login, setLogin] = useState({
@@ -40,19 +41,10 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios
-      .post("http://localhost:7001/api/v1/auth/login", {
-        email: login.email,
-        password: login.password,
-      })
-      .then(function (response) {
-        try {
-          console.log("ini response", response);
-          navigate("/");
-          localStorage.setItem("token", response.data.accessToken);
-        } catch (error) {
-          console.log("ini error", error);
-        }
+
+    await signInWithEmailAndPassword(auth, login.email, login.password)
+      .then(() => {
+        navigate("/");
       })
       .catch((error) => {
         if (error.response) {
@@ -90,7 +82,7 @@ function Login() {
         </Logo>
         <Card>
           {isToggle && (
-            <Alert severity="error">email or password is not correct.</Alert>
+            <Alert severity="error">Username or password is not correct.</Alert>
           )}
           <form onSubmit={(e) => handleSubmit(e)}>
             <FormControl sx={{ m: 1, width: "25ch" }} variant="standard">

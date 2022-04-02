@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import background from "./../images/requirements.png";
-import axios from "axios";
 
 function ListPlayer() {
   const [players, setPlayers] = useState([{}]);
 
   const getDataPlayer = async () => {
-    const { data } = await axios.get("http://localhost:4000/user_game");
-    const fetchdata = data;
-    setPlayers(fetchdata);
+    // const { data } = await axios.get("http://localhost:4000/user_game");
+    // const fetchdata = data;
+    // setPlayers(fetchdata);
   };
   useEffect(() => {
-    getDataPlayer();
+    // getDataPlayer();
   }, []);
   return (
     <Wrapper>

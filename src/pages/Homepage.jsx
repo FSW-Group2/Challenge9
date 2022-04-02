@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import MenuAppBar from "../components/Navbar";
 import home from "../images/homepage.jpg";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
-import HashLoader from "react-spinners";
 
 function Homepage() {
   return (
     <Wrapper>
       <MenuAppBar />
-
       <Sosmed>
         <div>
           <InstagramIcon sx={{ my: 2 }} />

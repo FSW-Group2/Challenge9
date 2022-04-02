@@ -14,16 +14,23 @@ import axios from "axios";
 import { Avatar, Divider, ListItemIcon } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 import male from "../images/male.png";
+import { signOut } from "firebase/auth";
+import { auth } from "../config/firebase";
 
 export default function MenuAppBar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isData, setisData] = useState([]);
-
   const navigate = useNavigate();
 
   const handleLogOut = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+    signOut(auth)
+      .then(() => {
+        console.log("User signed out");
+        navigate("/login");
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   };
 
   const open = Boolean(anchorEl);
@@ -48,7 +55,6 @@ export default function MenuAppBar() {
         }
       );
       const fetchdata = data;
-
       setisData(fetchdata);
     };
     getData();
@@ -85,7 +91,7 @@ export default function MenuAppBar() {
               <h5>Leaderboard</h5>
             </LinkNavbar>
             <LinkNavbar to={"/listplayer"}>
-              <h5>ListPlayer</h5>
+              <h5>List Player</h5>
             </LinkNavbar>
           </Typography>
 

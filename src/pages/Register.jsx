@@ -28,6 +28,9 @@ import {
 import background from "./../images/features.jpg";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { setDoc, doc, Timestamp } from "firebase/firestore";
+import { auth, db } from "../config/firebase";
 
 const axios = require("axios");
 
@@ -52,8 +55,25 @@ function Register() {
       confirmpassword: "",
     },
     onSubmit: (values) => {
-      console.log(values);
-      navigate("/login");
+      createUserWithEmailAndPassword(auth, values.email, values.password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          setDoc(doc(db, "users", user.uid), {
+            uid: user.uid,
+            email: values.email,
+            username: values.username,
+            gender: values.gender,
+            total_score: 0,
+            createdAt: Timestamp.fromDate(new Date()),
+          });
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode, errorMessage);
+        });
+      navigate("/");
     },
     validationSchema: schemaValidation,
   });
