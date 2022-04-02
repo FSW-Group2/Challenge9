@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import {
+  Alert,
   Button,
   Divider,
   FormControl,
@@ -28,14 +29,15 @@ import {
 import background from "./../images/features.jpg";
 import { useFormik } from "formik";
 import * as yup from "yup";
-
-const axios = require("axios");
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { setDoc, doc, Timestamp } from "firebase/firestore";
+import { auth, db } from "../config/firebase";
 
 const schemaValidation = yup.object().shape({
   username: yup.string().required("username must be required"),
   email: yup.string().email().required("email must be type email"),
   gender: yup.string().required("gender must be required"),
-  password: yup.string().required("password must be required"),
+  password: yup.string().min(6).required("password min 6 charachter"),
   confirmpassword: yup
     .string()
     .oneOf([yup.ref("password"), null])
@@ -43,6 +45,7 @@ const schemaValidation = yup.object().shape({
 });
 
 function Register() {
+  const [errorMessage, setErrorMessage] = useState("");
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -52,8 +55,27 @@ function Register() {
       confirmpassword: "",
     },
     onSubmit: (values) => {
-      console.log(values);
-      navigate("/login");
+      createUserWithEmailAndPassword(auth, values.email, values.password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          setDoc(doc(db, "users", user.uid), {
+            uid: user.uid,
+            email: values.email,
+            username: values.username,
+            gender: values.gender,
+            total_score: 0,
+            createdAt: Timestamp.fromDate(new Date()),
+          });
+
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code.split("auth/")[1];
+          const errorMessage = error.message;
+          setErrorMessage(errorCode);
+          console.log(errorCode, errorMessage);
+        });
+      navigate("/");
     },
     validationSchema: schemaValidation,
   });
@@ -82,6 +104,7 @@ function Register() {
         <h1>Register</h1>
 
         <Card>
+          {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
           <form onSubmit={formik.handleSubmit}>
             <FormControl sx={{ m: 1, width: "25ch" }} variant="standard">
               <InputLabel>Username</InputLabel>
@@ -123,7 +146,7 @@ function Register() {
               <FormHelperText>{formik.errors.email}</FormHelperText>
             </FormControl>
             <FormControl variant="standard" sx={{ m: 1, minWidth: 250 }}>
-              <InputLabel id="gender">Age</InputLabel>
+              <InputLabel id="gender">Gender</InputLabel>
               <Select
                 name="gender"
                 id="gender"
