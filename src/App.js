@@ -4,7 +4,7 @@ import Homepage from "./pages/Homepage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ListPlayer from "./pages/ListPlayer";
-
+import ProfilePages from "./pages/ProfilePages";
 function App() {
   return (
     <div className="App">
@@ -13,6 +13,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/listplayer" element={<ListPlayer />} />
+        <Route path="/profile" element={<ProfilePages />}/>
       </Routes>
     </div>
   );
