@@ -71,9 +71,11 @@ export default function MenuAppBar() {
         sx={{ borderBottom: 1, borderColor: "white" }}
       >
         <Toolbar>
-          <Typography variant="h8" component="div" sx={{ mr: 10 }}>
-            <h5>Squid Game</h5>
-          </Typography>
+          <LinkNavbar to={"/"}>
+            <Typography variant="h8" component="div" sx={{ mr: 10 }}>
+              <h5>Squid Game</h5>
+            </Typography>
+          </LinkNavbar>
           <Typography
             variant="h8"
             component="div"
@@ -84,7 +86,7 @@ export default function MenuAppBar() {
               mx: "auto",
             }}
           >
-            <LinkNavbar to={"/"}>
+            <LinkNavbar to={"/listgame"}>
               <h5>Games</h5>
             </LinkNavbar>
             <LinkNavbar to={"/"}>
