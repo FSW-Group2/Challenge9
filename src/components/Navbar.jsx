@@ -15,24 +15,25 @@ import { Avatar, Divider, ListItemIcon } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 import male from "../images/male.png";
 import { signOut } from "firebase/auth";
-import { auth } from "../config/firebase";
+import { auth, db } from "../config/firebase";
 import AuthContext from "../context/AuthContext";
-import { doc, getDoc } from "firebase/firestore";
-
-// const docRef = doc(db, "users");
-// const docSnap = await getDoc(docRef);
-
-// if (docSnap.exists()) {
-//   console.log("Document data:", docSnap.data());
-// } else {
-//   // doc.data() will be undefined in this case
-//   console.log("No such document!");
-// }
+import { doc, onSnapshot } from "firebase/firestore";
 
 export default function MenuAppBar() {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [isWomen, setIsWomen] = useState(null);
   const navigate = useNavigate();
   const isAuthenticated = useContext(AuthContext);
+
+  // console.log(isAuthenticated);
+
+  // const unsub = onSnapshot(doc(db, "users", "isAuthenticated.uid"), (doc) => {
+  //   console.log("Current data: ", doc.data());
+  //   // setIsWomen(doc.data());
+  // });
+  // useEffect(() => {
+  //   unsub();
+  // }, []);
 
   const handleLogOut = () => {
     signOut(auth)
@@ -102,7 +103,8 @@ export default function MenuAppBar() {
                 onClick={handleMenu}
                 color="inherit"
               >
-                {/* <h5>{isData.username}</h5> */}
+                <h5>{isAuthenticated.email}</h5>
+
                 <Avatar alt="male" src={male} />
               </IconButton>
               <Menu
