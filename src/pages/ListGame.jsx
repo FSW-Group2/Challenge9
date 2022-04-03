@@ -1,34 +1,14 @@
-import React, { useEffect, useState } from "react";
-import Card from "../components/Cards";
+import Cards from "../components/Cards";
 import MenuAppBar from "../components/Navbar";
 import styled from "styled-components";
 import background from "./../images/requirements.png";
-import { getDocs, collection } from "firebase/firestore";
-import { db } from "../config/firebase";
 
 function List() {
-  const [games, setGames] = useState([{}]);
-  const userCollectionRef = collection(db, "games");
-  useEffect(() => {
-    const getDataGames = async () => {
-      const data = await getDocs(userCollectionRef);
-      setGames(data.docs.map((doc) => ({ ...doc.data() })));
-    };
-    getDataGames();
-  }, []);
   return (
     <Wrapper>
       <div className="App">
         <MenuAppBar />
-        {games.map((item) => {
-          <Card>
-            <div key={item.id}>
-              <div>{item.name}</div>
-              <div>{item.description}</div>
-              <a href={item.img_url}></a>
-            </div>
-          </Card>;
-        })}
+        <Cards marginTop={100} />
       </div>
     </Wrapper>
   );

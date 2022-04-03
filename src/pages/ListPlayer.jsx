@@ -3,27 +3,55 @@ import styled from "styled-components";
 import background from "./../images/requirements.png";
 import { getDocs, collection } from "firebase/firestore";
 import { db } from "../config/firebase";
+import { HashLoader } from "react-spinners";
+import male from "../images/male.png";
+import { Avatar } from "@mui/material";
+import female from "../images/female.png";
 
 function ListPlayer() {
   const [players, setPlayers] = useState([{}]);
+  const [isLoading, setisLoading] = useState(true);
   const userCollectionRef = collection(db, "users");
   useEffect(() => {
     const getDataPlayer = async () => {
       const data = await getDocs(userCollectionRef);
-      setPlayers(data.docs.map((doc) => ({ ...doc.data() })));
+      setTimeout(() => {
+        setisLoading(false);
+        setPlayers(data.docs.map((doc) => ({ ...doc.data() })));
+      });
     };
     getDataPlayer();
+    console.log(players);
   }, []);
   return (
     <Wrapper>
+      {isLoading && <HashLoader color="white" />}
       {players.map((item) => {
         return (
-          <Card>
-            <div key={item.id}>
-              <div>{item.username}</div>
-              <div>{item.password}</div>
-            </div>
-          </Card>
+          <div key={item.uid}>
+            <Card>
+              <AvatarPlayer>
+                {item.gender === "Men" && (
+                  <Avatar
+                    alt="male"
+                    src={male}
+                    sx={{ width: 100, height: 100 }}
+                  />
+                )}
+                {item.gender === "Women" && (
+                  <Avatar
+                    alt="female"
+                    src={female}
+                    sx={{ width: 100, height: 100 }}
+                  />
+                )}
+              </AvatarPlayer>
+              <div>
+                <h3>{item.username}</h3>
+                <h6>{item.email}</h6>
+              </div>
+            </Card>
+          </div>
         );
       })}
     </Wrapper>
@@ -49,9 +77,25 @@ const Wrapper = styled.div`
 
 const Card = styled.div`
   padding: 2rem;
-  background-color: white;
-  width: 5rem;
-  height: 2rem;
+  background: linear-gradient(35deg, #ff6644, #ff9c77);
+  width: 10rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 15rem;
+  border-radius: 1rem;
+  color: white;
+  h6 {
+    font-weight: 300;
+  }
+`;
+
+const AvatarPlayer = styled.div`
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10rem;
 `;
 
 export default ListPlayer;

@@ -66,7 +66,7 @@ function Register() {
             total_score: 0,
             createdAt: Timestamp.fromDate(new Date()),
           });
-
+          navigate("/");
           console.log(user);
         })
         .catch((error) => {
@@ -75,7 +75,8 @@ function Register() {
           setErrorMessage(errorCode);
           console.log(errorCode, errorMessage);
         });
-      navigate("/");
+
+       
     },
     validationSchema: schemaValidation,
   });

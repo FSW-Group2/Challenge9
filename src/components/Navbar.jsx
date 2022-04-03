@@ -10,18 +10,15 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Avatar, Divider, ListItemIcon } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 import male from "../images/male.png";
 import { signOut } from "firebase/auth";
 import { auth, db } from "../config/firebase";
 import AuthContext from "../context/AuthContext";
-import { doc, onSnapshot } from "firebase/firestore";
 
 export default function MenuAppBar() {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [isWomen, setIsWomen] = useState(null);
   const navigate = useNavigate();
   const isAuthenticated = useContext(AuthContext);
 

@@ -10,6 +10,7 @@ import AuthContext from "./context/AuthContext";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "@firebase/auth";
 import { auth } from "./config/firebase";
+import AuthMiddleware from "./middlewares/Auth";
 
 function App() {
   const [isAuthenticated, setisAuthenticated] = useState(null);
@@ -28,9 +29,24 @@ function App() {
           <Route path="/" element={<Homepage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/listplayer" element={<ListPlayer />} />
+          <Route
+            path="/listplayer"
+            element={
+              <AuthMiddleware>
+                <ListPlayer />
+              </AuthMiddleware>
+            }
+          />
           <Route path="/listgame" element={<List />} />
-          <Route path="/games" element={<Games />} />
+
+          <Route
+            path="/games"
+            element={
+              <AuthMiddleware>
+                <Games />
+              </AuthMiddleware>
+            }
+          />
         </Routes>
       </AuthContext.Provider>
     </div>
