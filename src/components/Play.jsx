@@ -5,6 +5,8 @@ import kertas from "../images/icon-paper.svg";
 import batu from "../images/icon-rock.svg";
 import gunting from "../images/icon-scissors.svg";
 import { Modal, Box, Typography } from "@mui/material";
+import { updateDoc, doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../config/firebase";
 
 const Play = () => {
   const [computer, setComputer] = useState("");
@@ -46,7 +48,12 @@ const Play = () => {
     p: 4,
   };
 
-  const handleRefresh = () => {
+  const handleRefresh = async (id) => {
+    const userDoc = doc(db, "users", id);
+    const docSnap = await getDoc(userDoc);
+    const currentScore = docSnap.data().total_score;
+    const newScore = { total_score: currentScore + score };
+    await updateDoc(userDoc, newScore);
     setChoise("");
     setScore(0);
     setRound(0);
@@ -56,7 +63,7 @@ const Play = () => {
     setRefresh(false);
   };
 
-  const Result = () => {
+  const Result = async () => {
     switch (choise + computer) {
       case "scissorpaper":
       case "rockscissor":
@@ -125,7 +132,7 @@ const Play = () => {
         </Computer>
       </Played>
       {refresh && (
-        <div onClick={handleRefresh}>
+        <div onClick={() => handleRefresh(auth.currentUser.uid)}>
           <img src={refreshimg} alt="refresh" />
         </div>
       )}
