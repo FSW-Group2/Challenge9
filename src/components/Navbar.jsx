@@ -17,7 +17,7 @@ import male from "../images/male.png";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
 import AuthContext from "../context/AuthContext";
-import { doc, getDoc } from "firebase/firestore";
+// import { doc, getDoc } from "firebase/firestore";
 
 // const docRef = doc(db, "users");
 // const docSnap = await getDoc(docRef);
@@ -34,6 +34,9 @@ export default function MenuAppBar() {
   const navigate = useNavigate();
   const isAuthenticated = useContext(AuthContext);
 
+  const handleProfile = () => {
+    navigate ("/profile")
+  }
   const handleLogOut = () => {
     signOut(auth)
       .then(() => {
@@ -103,7 +106,7 @@ export default function MenuAppBar() {
                 color="inherit"
               >
                 {/* <h5>{isData.username}</h5> */}
-                <Avatar alt="male" src={male} />
+                <Avatar  alt="male" src={male} />
               </IconButton>
               <Menu
                 anchorEl={anchorEl}
@@ -140,8 +143,8 @@ export default function MenuAppBar() {
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
-                <MenuItem>
-                  <Avatar alt="male" src={male} /> Profile
+                <MenuItem onClick={handleProfile}>
+                  <Avatar  alt="male" src={male}  /> Profile
                 </MenuItem>
                 <Divider />
 
