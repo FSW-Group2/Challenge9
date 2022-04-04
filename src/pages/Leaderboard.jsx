@@ -7,7 +7,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { HashLoader } from "react-spinners";
 import styled from "styled-components";
@@ -19,9 +19,10 @@ function Leaderboard() {
   const [players, setPlayers] = useState([]);
   const [isLoading, setisLoading] = useState(true);
   const userCollectionRef = collection(db, "users");
+  const q = query(userCollectionRef, orderBy("total_score", "desc"));
   useEffect(() => {
     const getDataPlayer = async () => {
-      const data = await getDocs(userCollectionRef);
+      const data = await getDocs(q);
       setTimeout(() => {
         setisLoading(false);
         setPlayers(data.docs.map((doc) => ({ ...doc.data() })));
@@ -33,7 +34,7 @@ function Leaderboard() {
   return (
     <Wrapper>
       <MenuAppBar />
-      {isLoading && <HashLoader color="white" />}
+      <LoadingView>{isLoading && <HashLoader color="white" />}</LoadingView>
       <TableContainer>
         <TableContainer
           sx={{
@@ -87,6 +88,12 @@ const Wrapper = styled.div`
     url(${leaderboard}) no-repeat center center / cover;
   height: 100vh;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const LoadingView = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
