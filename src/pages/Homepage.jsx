@@ -11,22 +11,23 @@ function Homepage() {
       <MenuAppBar />
       <Sosmed>
         <div>
-          <InstagramIcon sx={{ my: 2 }} />
-          <h5>Instagram</h5>
+          <InstagramIcon sx={{ my: 0 }} />
+          <p>Instagram</p>
         </div>
         <div>
-          <TwitterIcon sx={{ my: 2 }} />
-          <h5>Twitter</h5>
+          <TwitterIcon sx={{ my: 0 }} />
+          <p>Twitter</p>
         </div>
         <div></div>
       </Sosmed>
       <TitleHome>
         <h1>PLAY THE GAME</h1>
-        <h5>
+        <br />
+        <p>
           Let's play the game with your curiosity. You can play any games in
           list game page, get point from the game and set your position in top
           leaderboard!
-        </h5>
+        </p>
       </TitleHome>
     </Wrapper>
   );
