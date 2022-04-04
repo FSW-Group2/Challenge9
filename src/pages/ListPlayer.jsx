@@ -7,9 +7,10 @@ import { HashLoader } from "react-spinners";
 import male from "../images/male.png";
 import { Avatar } from "@mui/material";
 import female from "../images/female.png";
+import MenuAppBar from "../components/Navbar";
 
 function ListPlayer() {
-  const [players, setPlayers] = useState([{}]);
+  const [players, setPlayers] = useState([]);
   const [isLoading, setisLoading] = useState(true);
   const userCollectionRef = collection(db, "users");
   useEffect(() => {
@@ -28,8 +29,8 @@ function ListPlayer() {
       {isLoading && <HashLoader color="white" />}
       {players.map((item) => {
         return (
-          <div key={item.uid}>
-            <Card>
+          <Card>
+            <div key={item.uid}>
               <AvatarPlayer>
                 {item.gender === "Men" && (
                   <Avatar
@@ -50,8 +51,8 @@ function ListPlayer() {
                 <h3>{item.username}</h3>
                 <h6>{item.email}</h6>
               </div>
-            </Card>
-          </div>
+            </div>
+          </Card>
         );
       })}
     </Wrapper>

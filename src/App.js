@@ -11,7 +11,8 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "@firebase/auth";
 import { auth } from "./config/firebase";
 import AuthMiddleware from "./middlewares/Auth";
-
+import BasicGrid from "./pages/ProfilePages";
+import Leaderboard from "./pages/Leaderboard";
 function App() {
   const [isAuthenticated, setisAuthenticated] = useState(null);
 
@@ -44,6 +45,15 @@ function App() {
             element={
               <AuthMiddleware>
                 <Games />
+              </AuthMiddleware>
+            }
+          />
+          <Route path="/profile" element={<BasicGrid />} />
+          <Route
+            path="/leaderboard"
+            element={
+              <AuthMiddleware>
+                <Leaderboard />
               </AuthMiddleware>
             }
           />

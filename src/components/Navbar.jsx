@@ -13,16 +13,39 @@ import { useNavigate } from "react-router-dom";
 import { Avatar, Divider, ListItemIcon } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 import male from "../images/male.png";
+import female from "../images/female.png";
 import { signOut } from "firebase/auth";
+import { onAuthStateChanged } from "@firebase/auth";
 import { auth, db } from "../config/firebase";
 import AuthContext from "../context/AuthContext";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { ClipLoader } from "react-spinners";
 
 export default function MenuAppBar() {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [isPlayer, setisPlayer] = useState("");
+  const [DataPlayer, setDataPlayer] = useState({});
+  const [isLoading, setisLoading] = useState(true);
   const navigate = useNavigate();
   const isAuthenticated = useContext(AuthContext);
+  const userCollectionRef = collection(db, "users");
+  onAuthStateChanged(auth, (user) => {
+    setisPlayer(user.uid);
+  });
+  const q = query(userCollectionRef, where("uid", "==", isPlayer));
 
-  // console.log(isAuthenticated);
+  useEffect(() => {
+    const getDataPlayer = async () => {
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        setTimeout(() => {
+          setDataPlayer(doc.data());
+          setisLoading(false);
+        });
+      });
+    };
+    getDataPlayer();
+  }, [isPlayer]);
 
   // const unsub = onSnapshot(doc(db, "users", "isAuthenticated.uid"), (doc) => {
   //   console.log("Current data: ", doc.data());
@@ -82,7 +105,7 @@ export default function MenuAppBar() {
             <LinkNavbar to={"/listgame"}>
               <h5>Games</h5>
             </LinkNavbar>
-            <LinkNavbar to={"/"}>
+            <LinkNavbar to={"/leaderboard"}>
               <h5>Leaderboard</h5>
             </LinkNavbar>
             <LinkNavbar to={"/listplayer"}>
@@ -100,9 +123,14 @@ export default function MenuAppBar() {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <h5>{isAuthenticated.email}</h5>
-
-                <Avatar alt="male" src={male} />
+                {isLoading && <ClipLoader size={"10px"} />}
+                <h5>{DataPlayer.username}</h5>
+                {DataPlayer.gender === "Men" && (
+                  <Avatar alt="male" src={male} />
+                )}
+                {DataPlayer.gender === "Women" && (
+                  <Avatar alt="female" src={female} />
+                )}
               </IconButton>
               <Menu
                 anchorEl={anchorEl}
@@ -139,9 +167,17 @@ export default function MenuAppBar() {
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
-                <MenuItem>
-                  <Avatar alt="male" src={male} /> Profile
-                </MenuItem>
+                <LinkNavbar to={"/profile"}>
+                  <MenuItem>
+                    {DataPlayer.gender === "Men" && (
+                      <Avatar alt="male" src={male} />
+                    )}
+                    {DataPlayer.gender === "Women" && (
+                      <Avatar alt="female" src={female} />
+                    )}{" "}
+                    <div>Profile</div>
+                  </MenuItem>
+                </LinkNavbar>
                 <Divider />
 
                 <MenuItem onClick={handleLogOut}>
@@ -177,5 +213,8 @@ const LinkNavbar = styled(Link)`
   text-decoration: none;
   h5 {
     font-weight: 300;
+  }
+  div {
+    color: #000;
   }
 `;
