@@ -193,6 +193,10 @@ const Play = () => {
             <div>1. Permainan berlangsung dalam 3 ronde</div>
             <div>2. Jika menang mendapatkan 1 poin</div>
             <div>3. Jika kalah kehilangan 1 poin</div>
+            <div>
+              4. Jika permainan telah selesai, klik refresh untuk mendapatkan
+              score di leaderboard dan mulai game kembali
+            </div>
           </Typography>
         </Box>
       </Modal>
