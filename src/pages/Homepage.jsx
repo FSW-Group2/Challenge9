@@ -1,33 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import MenuAppBar from "../components/Navbar";
 import home from "../images/homepage.jpg";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
+import HashLoader from "react-spinners";
 
 function Homepage() {
   return (
     <Wrapper>
       <MenuAppBar />
+
       <Sosmed>
         <div>
-          <InstagramIcon sx={{ my: 0 }} />
-          <p>Instagram</p>
+          <InstagramIcon sx={{ my: 2 }} />
+          <h5>Instagram</h5>
         </div>
         <div>
-          <TwitterIcon sx={{ my: 0 }} />
-          <p>Twitter</p>
+          <TwitterIcon sx={{ my: 2 }} />
+          <h5>Twitter</h5>
         </div>
         <div></div>
       </Sosmed>
       <TitleHome>
         <h1>PLAY THE GAME</h1>
-        <br />
-        <p>
+        <h5>
           Let's play the game with your curiosity. You can play any games in
           list game page, get point from the game and set your position in top
           leaderboard!
-        </p>
+        </h5>
       </TitleHome>
     </Wrapper>
   );

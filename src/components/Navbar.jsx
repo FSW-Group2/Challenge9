@@ -77,6 +77,8 @@ export default function MenuAppBar() {
   };
 
   return (
+    <BoxNav>
+      <div>
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
         position="fixed"
@@ -205,6 +207,8 @@ export default function MenuAppBar() {
         </Toolbar>
       </AppBar>
     </Box>
+      </div>
+      </BoxNav>
   );
 }
 
@@ -216,5 +220,9 @@ const LinkNavbar = styled(Link)`
   }
   div {
     color: #000;
-  }
+  };
+`;
+
+const BoxNav = styled.div`
+  margin-bottom: 10px;
 `;
